@@ -52,9 +52,9 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
         projection: 'globe',
-        zoom: 1.5,
-        center: [0, 20], // Adjust center point for better visual centering
-        pitch: 30,
+        zoom: 1.2,        // Slightly zoomed out for better visibility
+        center: [0, 0],   // Center at [0,0] for a perfectly centered globe
+        pitch: 0,         // Start with zero pitch for a centered view
         attributionControl: false,
         bearing: 0
       });
@@ -283,10 +283,10 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
   }, [activeSociety, mapLoaded]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="w-full h-full relative">
       <div 
         ref={mapContainer} 
-        className="absolute inset-0 w-full h-full bg-gray-900" 
+        className="absolute inset-0 bg-gray-900" 
       />
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/20" />
     </div>
