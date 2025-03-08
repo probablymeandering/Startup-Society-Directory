@@ -2,14 +2,14 @@
 import React from 'react';
 import { Society } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { History, Calendar, Milestone, TrendingUp, Flag } from 'lucide-react';
+import { History, Calendar, TrendingUp, Flag } from 'lucide-react';
 
 interface SocietyHistoryProps {
   society: Society;
 }
 
-// Custom milestone icon
-const Milestone = ({ className }: { className?: string }) => (
+// Custom milestone icon renamed to MilestoneIcon to avoid conflict
+const MilestoneIcon = ({ className }: { className?: string }) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 24 24" 
