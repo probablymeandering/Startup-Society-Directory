@@ -1,3 +1,4 @@
+
 export interface Society {
   id: string;
   name: string;
@@ -150,7 +151,10 @@ export const categories = [
   "Arts",
   "Sciences",
   "Technology",
-  "Politics"
+  "Politics",
+  "Nature",
+  "Space",
+  "Experimental"
 ];
 
 export const regions = [
