@@ -1,15 +1,12 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-
 const Header = () => {
-  return (
-    <header className="w-full glass fixed top-0 z-50 px-6 py-4 shadow-sm animate-in">
+  return <header className="w-full glass fixed top-0 z-50 px-6 py-4 shadow-sm animate-in">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold tracking-tight">
-            <span className="text-primary">SOCIETY</span> INSIGHTS
+            <span className="text-blue-500">SOCIETY</span> INSIGHTS
           </h1>
         </div>
         
@@ -29,8 +26,6 @@ const Header = () => {
           </Button>
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
