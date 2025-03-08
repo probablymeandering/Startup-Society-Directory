@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,6 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Form, FormField, FormItem, FormControl } from '@/components/ui/form';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 import { societies } from '@/lib/data';
 
@@ -61,9 +64,11 @@ const generateComparativeIncomeData = () => {
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe'];
 
 const InteractiveVisualization = () => {
+  const [selectedSocieties, setSelectedSocieties] = useState<string[]>([]);
   const [visualizationType, setVisualizationType] = useState('population');
   const [timeRange, setTimeRange] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showAlert, setShowAlert] = useState(false);
   
   // Filter income data based on time range
   const filterIncomeDataByTimeRange = (data) => {
@@ -79,21 +84,65 @@ const InteractiveVisualization = () => {
   const filteredIncomeTrendsData = filterIncomeDataByTimeRange(generateIncomeTrendsData());
   const filteredComparativeIncomeData = filterIncomeDataByTimeRange(generateComparativeIncomeData());
   
-  // Filter society data based on category
-  const societiesByCategory = 
-    selectedCategory === 'all' 
-      ? societies 
-      : societies.filter(society => society.category.toLowerCase() === selectedCategory.toLowerCase());
+  const toggleSocietySelection = (id: string) => {
+    if (selectedSocieties.includes(id)) {
+      setSelectedSocieties(selectedSocieties.filter(sid => sid !== id));
+    } else if (selectedSocieties.length < 3) {
+      setSelectedSocieties([...selectedSocieties, id]);
+    }
+  };
+
+  // Check if at least one society is selected
+  useEffect(() => {
+    if (selectedSocieties.length === 0) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [selectedSocieties]);
+  
+  // Filter society data based on category and selected societies
+  const societiesByCategory = societies
+    .filter(society => selectedCategory === 'all' || society.category.toLowerCase() === selectedCategory.toLowerCase())
+    .filter(society => selectedSocieties.length === 0 || selectedSocieties.includes(society.id));
   
   // Generate data for society population comparison
   const societyPopulationData = societiesByCategory.map(society => ({
     name: society.name.split(' ')[0], // First word of society name for brevity
     population: parseInt(society.population.replace(/[^0-9.]/g, '')) * 
-                (society.population.includes('M') ? 1000 : 1)
+                (society.population.includes('K') ? 1 : 0.001)
   }));
   
   return (
     <div className="space-y-6">
+      <div className="bg-muted p-4 rounded-lg mb-6">
+        <h3 className="text-lg font-medium mb-4">Select Societies to Analyze (min 1, max 3)</h3>
+        {showAlert && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Please select at least one society to continue.
+            </AlertDescription>
+          </Alert>
+        )}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {societies.map(society => (
+            <div 
+              key={society.id} 
+              className={`p-3 border rounded-md cursor-pointer transition-colors ${
+                selectedSocieties.includes(society.id) 
+                  ? 'border-primary bg-primary/10' 
+                  : 'border-border hover:border-primary/50'
+              }`}
+              onClick={() => toggleSocietySelection(society.id)}
+            >
+              <div className="font-medium">{society.name}</div>
+              <div className="text-sm text-muted-foreground">{society.category} • {society.location}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div className="space-y-1">
           <h2 className="text-2xl font-semibold">Interactive Data Visualization</h2>
@@ -101,7 +150,7 @@ const InteractiveVisualization = () => {
         </div>
         
         <div className="flex flex-wrap gap-3">
-          <Select value={visualizationType} onValueChange={setVisualizationType}>
+          <Select value={visualizationType} onValueChange={setVisualizationType} disabled={selectedSocieties.length === 0}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Visualization Type" />
             </SelectTrigger>
@@ -114,7 +163,7 @@ const InteractiveVisualization = () => {
           </Select>
           
           {visualizationType === 'income' && (
-            <Select value={timeRange} onValueChange={setTimeRange}>
+            <Select value={timeRange} onValueChange={setTimeRange} disabled={selectedSocieties.length === 0}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Time Range" />
               </SelectTrigger>
@@ -127,7 +176,7 @@ const InteractiveVisualization = () => {
           )}
           
           {visualizationType === 'comparison' && (
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory} disabled={selectedSocieties.length === 0}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
@@ -143,168 +192,180 @@ const InteractiveVisualization = () => {
         </div>
       </div>
       
-      <Card className="overflow-hidden">
-        <CardHeader>
-          <CardTitle>
-            {visualizationType === 'population' && 'Population Age Distribution'}
-            {visualizationType === 'income' && 'Income Trends Over Time'}
-            {visualizationType === 'footprint' && 'Land Use Distribution'}
-            {visualizationType === 'comparison' && 'Society Comparison'}
-          </CardTitle>
-          <CardDescription>
-            {visualizationType === 'population' && 'Breakdown of population by age groups'}
-            {visualizationType === 'income' && `Income trends ${timeRange === 'all' ? 'since 2017' : `for the last ${timeRange === 'last3' ? '3' : '5'} years`}`}
-            {visualizationType === 'footprint' && 'Analysis of land use allocation across society footprints'}
-            {visualizationType === 'comparison' && `Comparing ${selectedCategory === 'all' ? 'all societies' : selectedCategory + ' societies'} by key metrics`}
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="p-0">
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              {visualizationType === 'population' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
-                  <BarChart data={generatePopulationBreakdownData()} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                    <Legend />
-                    <Bar dataKey="value" fill="#8884d8" name="Percentage" />
-                  </BarChart>
-                  <PieChart>
-                    <Pie
-                      data={generatePopulationBreakdownData()}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={true}
-                      outerRadius={120}
-                      fill="#8884d8"
-                      dataKey="value"
-                      nameKey="name"
-                      label={({ name, value }) => `${name}: ${value}%`}
-                    >
-                      {generatePopulationBreakdownData().map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                    <Legend />
-                  </PieChart>
-                </div>
-              )}
-              
-              {visualizationType === 'income' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
-                  <LineChart data={filteredIncomeTrendsData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis label={{ value: 'Annual Income ($)', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip formatter={(value) => [`$${value}`, 'Average Income']} />
-                    <Legend />
-                    <Line type="monotone" dataKey="income" stroke="#8884d8" name="Average Income" activeDot={{ r: 8 }} />
-                  </LineChart>
-                  <AreaChart data={filteredComparativeIncomeData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => [`$${value}`, 'Income']} />
-                    <Legend />
-                    <Area type="monotone" dataKey="Tech" stackId="1" stroke="#8884d8" fill="#8884d8" />
-                    <Area type="monotone" dataKey="Sciences" stackId="2" stroke="#82ca9d" fill="#82ca9d" />
-                    <Area type="monotone" dataKey="Arts" stackId="3" stroke="#ffc658" fill="#ffc658" />
-                    <Area type="monotone" dataKey="Politics" stackId="4" stroke="#ff8042" fill="#ff8042" />
-                  </AreaChart>
-                </div>
-              )}
-              
-              {visualizationType === 'footprint' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
-                  <BarChart data={generateFootprintData()} layout="vertical" margin={{ top: 20, right: 30, left: 90, bottom: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
-                    <YAxis type="category" dataKey="name" />
-                    <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                    <Legend />
-                    <Bar dataKey="value" fill="#82ca9d" name="Land Allocation" />
-                  </BarChart>
-                  <PieChart>
-                    <Pie
-                      data={generateFootprintData()}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={true}
-                      outerRadius={120}
-                      fill="#82ca9d"
-                      dataKey="value"
-                      nameKey="name"
-                      label={({ name, value }) => `${name}: ${value}%`}
-                    >
-                      {generateFootprintData().map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
-                    <Legend />
-                  </PieChart>
-                </div>
-              )}
-              
-              {visualizationType === 'comparison' && (
-                <BarChart
-                  data={societyPopulationData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="name" 
-                    angle={-45} 
-                    textAnchor="end" 
-                    height={60}
-                    interval={0}
-                  />
-                  <YAxis />
-                  <Tooltip formatter={(value) => [`${value}`, 'Population (K)']} />
-                  <Legend />
-                  <Bar dataKey="population" name="Population (K)" fill="#0088fe" />
-                </BarChart>
-              )}
-            </ResponsiveContainer>
-          </div>
+      {selectedSocieties.length > 0 ? (
+        <Card className="overflow-hidden">
+          <CardHeader>
+            <CardTitle>
+              {visualizationType === 'population' && 'Population Age Distribution'}
+              {visualizationType === 'income' && 'Income Trends Over Time'}
+              {visualizationType === 'footprint' && 'Land Use Distribution'}
+              {visualizationType === 'comparison' && 'Society Comparison'}
+            </CardTitle>
+            <CardDescription>
+              {visualizationType === 'population' && 'Breakdown of population by age groups'}
+              {visualizationType === 'income' && `Income trends ${timeRange === 'all' ? 'since 2017' : `for the last ${timeRange === 'last3' ? '3' : '5'} years`}`}
+              {visualizationType === 'footprint' && 'Analysis of land use allocation across society footprints'}
+              {visualizationType === 'comparison' && `Comparing ${selectedCategory === 'all' ? 'all societies' : selectedCategory + ' societies'} by key metrics`}
+            </CardDescription>
+          </CardHeader>
           
-          <div className="p-6 border-t">
-            <h3 className="text-lg font-medium mb-2">Key Insights</h3>
-            {visualizationType === 'population' && (
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>Working-age adults (19-50) make up the majority of society populations (63%).</li>
-                <li>The 19-35 age group is the largest demographic segment at 38%.</li>
-                <li>Senior citizens (65+) represent just 5% of the population in emerging societies.</li>
-              </ul>
-            )}
-            {visualizationType === 'income' && (
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>Average income has shown a steady increase of approximately 14% year-over-year.</li>
-                <li>Technology-focused societies consistently show higher income levels than other categories.</li>
-                <li>A temporary income decrease occurred in 2020, followed by strong recovery and growth.</li>
-              </ul>
-            )}
-            {visualizationType === 'footprint' && (
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>Residential areas account for the largest portion of land use at 45%.</li>
-                <li>Green spaces (15%) are prioritized over industrial zones (8%) in most societies.</li>
-                <li>Commercial and infrastructure zones together comprise approximately one-third of land allocation.</li>
-              </ul>
-            )}
-            {visualizationType === 'comparison' && (
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>Population sizes vary significantly across different societies.</li>
-                <li>Technology-focused societies tend to have larger populations than arts-focused ones.</li>
-                <li>The majority of societies maintain populations between 20K-50K residents.</li>
-              </ul>
-            )}
+          <CardContent className="p-0">
+            <div className="h-[400px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                {visualizationType === 'population' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+                    <BarChart data={generatePopulationBreakdownData()} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
+                      <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
+                      <Legend />
+                      <Bar dataKey="value" fill="#8884d8" name="Percentage" />
+                    </BarChart>
+                    <PieChart>
+                      <Pie
+                        data={generatePopulationBreakdownData()}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                        nameKey="name"
+                        label={({ name, value }) => `${name}: ${value}%`}
+                      >
+                        {generatePopulationBreakdownData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
+                      <Legend />
+                    </PieChart>
+                  </div>
+                )}
+                
+                {visualizationType === 'income' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+                    <LineChart data={filteredIncomeTrendsData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="year" />
+                      <YAxis label={{ value: 'Annual Income ($)', angle: -90, position: 'insideLeft' }} />
+                      <Tooltip formatter={(value) => [`$${value}`, 'Average Income']} />
+                      <Legend />
+                      <Line type="monotone" dataKey="income" stroke="#8884d8" name="Average Income" activeDot={{ r: 8 }} />
+                    </LineChart>
+                    <AreaChart data={filteredComparativeIncomeData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="year" />
+                      <YAxis />
+                      <Tooltip formatter={(value) => [`$${value}`, 'Income']} />
+                      <Legend />
+                      <Area type="monotone" dataKey="Tech" stackId="1" stroke="#8884d8" fill="#8884d8" />
+                      <Area type="monotone" dataKey="Sciences" stackId="2" stroke="#82ca9d" fill="#82ca9d" />
+                      <Area type="monotone" dataKey="Arts" stackId="3" stroke="#ffc658" fill="#ffc658" />
+                      <Area type="monotone" dataKey="Politics" stackId="4" stroke="#ff8042" fill="#ff8042" />
+                    </AreaChart>
+                  </div>
+                )}
+                
+                {visualizationType === 'footprint' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+                    <BarChart data={generateFootprintData()} layout="vertical" margin={{ top: 20, right: 30, left: 90, bottom: 30 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis type="category" dataKey="name" />
+                      <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
+                      <Legend />
+                      <Bar dataKey="value" fill="#82ca9d" name="Land Allocation" />
+                    </BarChart>
+                    <PieChart>
+                      <Pie
+                        data={generateFootprintData()}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        outerRadius={120}
+                        fill="#82ca9d"
+                        dataKey="value"
+                        nameKey="name"
+                        label={({ name, value }) => `${name}: ${value}%`}
+                      >
+                        {generateFootprintData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
+                      <Legend />
+                    </PieChart>
+                  </div>
+                )}
+                
+                {visualizationType === 'comparison' && (
+                  <BarChart
+                    data={societyPopulationData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45} 
+                      textAnchor="end" 
+                      height={60}
+                      interval={0}
+                    />
+                    <YAxis />
+                    <Tooltip formatter={(value) => [`${value}`, 'Population (K)']} />
+                    <Legend />
+                    <Bar dataKey="population" name="Population (K)" fill="#0088fe" />
+                  </BarChart>
+                )}
+              </ResponsiveContainer>
+            </div>
+            
+            <div className="p-6 border-t">
+              <h3 className="text-lg font-medium mb-2">Key Insights</h3>
+              {visualizationType === 'population' && (
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Working-age adults (19-50) make up the majority of society populations (63%).</li>
+                  <li>The 19-35 age group is the largest demographic segment at 38%.</li>
+                  <li>Senior citizens (65+) represent just 5% of the population in emerging societies.</li>
+                </ul>
+              )}
+              {visualizationType === 'income' && (
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Average income has shown a steady increase of approximately 14% year-over-year.</li>
+                  <li>Technology-focused societies consistently show higher income levels than other categories.</li>
+                  <li>A temporary income decrease occurred in 2020, followed by strong recovery and growth.</li>
+                </ul>
+              )}
+              {visualizationType === 'footprint' && (
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Residential areas account for the largest portion of land use at 45%.</li>
+                  <li>Green spaces (15%) are prioritized over industrial zones (8%) in most societies.</li>
+                  <li>Commercial and infrastructure zones together comprise approximately one-third of land allocation.</li>
+                </ul>
+              )}
+              {visualizationType === 'comparison' && (
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Population sizes vary significantly across different societies.</li>
+                  <li>Technology-focused societies tend to have larger populations than arts-focused ones.</li>
+                  <li>The majority of societies maintain populations between 20K-50K residents.</li>
+                </ul>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="p-8 text-center">
+          <div className="mb-4 text-amber-500">
+            <AlertCircle className="h-12 w-12 mx-auto" />
           </div>
-        </CardContent>
-      </Card>
+          <h3 className="text-xl font-semibold mb-2">No Societies Selected</h3>
+          <p className="text-muted-foreground mb-4">
+            Please select at least one society from the list above to view analysis and visualizations.
+          </p>
+        </Card>
+      )}
     </div>
   );
 };
