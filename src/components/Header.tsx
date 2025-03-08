@@ -8,7 +8,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold tracking-tight">
-            <span className="text-primary">SOCIETY</span> INSIGHTS
+            <span className="text-primary">Startup</span> Societies
           </h1>
         </div>
         
