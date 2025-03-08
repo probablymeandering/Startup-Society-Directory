@@ -10,6 +10,7 @@ import {
   PopoverTrigger 
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input'; 
 import { regions, populationFilters, incomeFilters } from '@/lib/data';
 
 interface SearchFiltersProps {
@@ -51,7 +52,7 @@ const SearchFilters = ({ onSearch, onFilterChange }: SearchFiltersProps) => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search for societies and regions"
+              placeholder="Search for societies"
               className="w-full py-2 pl-10 pr-4 rounded-lg border border-input bg-background focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
