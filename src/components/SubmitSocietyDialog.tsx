@@ -4,6 +4,8 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
@@ -34,7 +36,9 @@ const SubmitSocietyDialog = ({ onSubmit }: SubmitSocietyDialogProps) => {
           <span>Submit Society</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] md:max-w-[800px] p-0">
+      <DialogContent className="w-[90vw] max-w-[800px] p-0 overflow-hidden">
+        <DialogTitle className="sr-only">Submit a New Society</DialogTitle>
+        <DialogDescription className="sr-only">Form to submit a new society</DialogDescription>
         <SubmitSocietyForm onSubmit={handleSubmit} onCancel={handleCancel} />
       </DialogContent>
     </Dialog>

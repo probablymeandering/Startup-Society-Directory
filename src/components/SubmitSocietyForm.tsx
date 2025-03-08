@@ -64,7 +64,7 @@ const SubmitSocietyForm = ({ onSubmit, onCancel }: SubmitSocietyFormProps) => {
   };
 
   return (
-    <div className="w-full bg-background rounded-lg shadow-md overflow-hidden">
+    <div className="w-full bg-background rounded-lg">
       <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-background z-10">
         <h2 className="text-xl font-bold">Submit a New Society</h2>
         <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8">
@@ -72,7 +72,7 @@ const SubmitSocietyForm = ({ onSubmit, onCancel }: SubmitSocietyFormProps) => {
         </Button>
       </div>
       
-      <div className="p-6 max-h-[70vh] overflow-y-auto">
+      <div className="p-6 max-h-[60vh] overflow-y-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
