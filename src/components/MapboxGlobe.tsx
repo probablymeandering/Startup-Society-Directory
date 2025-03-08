@@ -47,15 +47,17 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         return;
       }
 
-      // Initialize the map
+      // Initialize the map - adjust center position for better visibility
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
         projection: 'globe',
         zoom: 1.5,
-        center: [0, 20],
-        pitch: 45,
-        attributionControl: false
+        center: [0, 0], // Center at [0,0] for better globe positioning
+        pitch: 40,
+        attributionControl: false,
+        width: '100%',
+        height: '100%',
       });
 
       // Add navigation controls
@@ -65,6 +67,19 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         }),
         'top-right'
       );
+
+      // Ensure the map container is properly sized
+      if (mapContainer.current) {
+        mapContainer.current.style.width = '100%';
+        mapContainer.current.style.height = '100%';
+      }
+
+      // Force map resize after initialization to ensure it fills the container
+      setTimeout(() => {
+        if (map.current) {
+          map.current.resize();
+        }
+      }, 100);
 
       // Disable scroll zoom for smoother experience
       map.current.scrollZoom.disable();
@@ -267,7 +282,7 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
 
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden">
-      <div ref={mapContainer} className="absolute inset-0" />
+      <div ref={mapContainer} className="absolute inset-0 w-full h-full bg-gray-900" />
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/20 rounded-xl" />
     </div>
   );
