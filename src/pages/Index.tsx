@@ -107,10 +107,12 @@ const Index = () => {
   };
 
   const handleCardClick = (society: Society) => {
+    console.log('Card clicked:', society.name);
     setActiveSociety(society);
   };
 
   const handleMarkerClick = (society: Society) => {
+    console.log('Marker clicked:', society.name);
     setActiveSociety(society);
   };
 
@@ -129,9 +131,10 @@ const Index = () => {
           onCategoryChange={handleCategoryChange} 
         />
         
-        {/* Mapbox Globe visualization replacing the previous GlobeVisualization */}
+        {/* Mapbox Globe visualization */}
         <div className="w-full px-6 pt-6">
-          <div className="h-[400px] w-full rounded-xl overflow-hidden">
+          <div className="h-[400px] w-full rounded-xl overflow-hidden bg-gray-900">
+            {/* Added bg-gray-900 for better visibility while loading */}
             <MapboxGlobe 
               societies={societies} 
               activeSociety={activeSociety} 

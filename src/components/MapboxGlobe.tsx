@@ -20,17 +20,34 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<Record<string, mapboxgl.Marker>>({});
+  const markersRef = useRef<{[key: string]: mapboxgl.Marker}>({});
   const [mapLoaded, setMapLoaded] = useState(false);
 
   // Initialize map when the component mounts
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (map.current) return; // Only initialize once
+    
+    if (!mapContainer.current) {
+      console.error('Map container ref is null');
+      return;
+    }
 
-    // Only initialize the map once
-    if (map.current) return;
-
+    console.log('Initializing Mapbox map');
+    
     try {
+      // Check if mapboxgl is available
+      if (!mapboxgl) {
+        console.error('mapboxgl is not available');
+        return;
+      }
+      
+      // Check if accessToken is set
+      if (!mapboxgl.accessToken) {
+        console.error('Mapbox access token is not set');
+        return;
+      }
+
+      // Initialize the map
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
@@ -52,12 +69,11 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
       // Disable scroll zoom for smoother experience
       map.current.scrollZoom.disable();
 
-      // Auto rotation settings
+      let userInteracting = false;
+      let spinEnabled = true;
       const secondsPerRevolution = 180;
       const maxSpinZoom = 5;
       const slowSpinZoom = 3;
-      let userInteracting = false;
-      let spinEnabled = true;
 
       // Spin globe function
       function spinGlobe() {
@@ -76,23 +92,28 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         }
       }
 
-      // Add atmosphere and fog effects
+      // Add event handlers
       map.current.on('style.load', () => {
+        console.log('Mapbox style loaded');
         if (!map.current) return;
 
-        map.current.setFog({
-          color: 'rgb(20, 26, 41)',
-          'high-color': 'rgb(36, 92, 223)',
-          'horizon-blend': 0.4,
-          'space-color': 'rgb(11, 11, 25)',
-          'star-intensity': 0.5
-        });
-        
-        setMapLoaded(true);
-        spinGlobe();
-
-        // Add markers once the style loads
-        addMarkers();
+        try {
+          map.current.setFog({
+            color: 'rgb(20, 26, 41)',
+            'high-color': 'rgb(36, 92, 223)',
+            'horizon-blend': 0.4,
+            'space-color': 'rgb(11, 11, 25)',
+            'star-intensity': 0.5
+          });
+          
+          setMapLoaded(true);
+          spinGlobe();
+          
+          // Add markers once the style loads
+          addMarkers();
+        } catch (err) {
+          console.error('Error setting fog:', err);
+        }
       });
 
       // Event listeners for interaction
@@ -120,25 +141,43 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
 
       // Start the rotation
       spinGlobe();
+      
+      console.log('Mapbox map initialized successfully');
     } catch (error) {
       console.error('Error initializing Mapbox:', error);
     }
 
     // Cleanup
     return () => {
+      console.log('Cleaning up map');
       if (map.current) {
-        map.current.remove();
-        map.current = null;
+        try {
+          map.current.remove();
+          map.current = null;
+        } catch (error) {
+          console.error('Error removing map:', error);
+        }
       }
     };
   }, []);
 
   // Function to add markers
   const addMarkers = () => {
-    if (!map.current || !societies.length) return;
+    if (!map.current || !societies.length) {
+      console.log('Cannot add markers: map or societies not available');
+      return;
+    }
+
+    console.log('Adding markers for', societies.length, 'societies');
 
     // Clear existing markers
-    Object.values(markersRef.current).forEach(marker => marker.remove());
+    Object.values(markersRef.current).forEach(marker => {
+      try {
+        marker.remove();
+      } catch (err) {
+        console.error('Error removing marker:', err);
+      }
+    });
     markersRef.current = {};
 
     // Add markers for each society
@@ -180,40 +219,49 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
   // Update markers when societies or activeSociety changes
   useEffect(() => {
     if (mapLoaded && map.current) {
+      console.log('Updating markers due to data change');
       addMarkers();
     }
   }, [societies, mapLoaded, activeSociety]);
 
   // Highlight active society
   useEffect(() => {
-    if (!mapLoaded || !activeSociety || !map.current) return;
+    if (!mapLoaded || !map.current) return;
+    
+    if (activeSociety) {
+      console.log('Highlighting active society:', activeSociety.name);
+      
+      try {
+        // Zoom to active society
+        map.current.flyTo({
+          center: activeSociety.coordinates,
+          zoom: 4,
+          duration: 2000,
+          essential: true
+        });
 
-    try {
-      // Zoom to active society
-      map.current.flyTo({
-        center: activeSociety.coordinates,
-        zoom: 4,
-        duration: 2000,
-        essential: true
-      });
-
-      // Update marker styling
-      Object.entries(markersRef.current).forEach(([id, marker]) => {
-        const markerEl = marker.getElement();
-        if (id === activeSociety.id) {
-          markerEl.style.backgroundColor = '#ffffff';
-          markerEl.style.width = '16px';
-          markerEl.style.height = '16px';
-          markerEl.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.8)';
-        } else {
-          markerEl.style.backgroundColor = '#3b82f6';
-          markerEl.style.width = '12px';
-          markerEl.style.height = '12px';
-          markerEl.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.6)';
-        }
-      });
-    } catch (error) {
-      console.error('Error highlighting active society:', error);
+        // Update marker styling
+        Object.entries(markersRef.current).forEach(([id, marker]) => {
+          try {
+            const markerEl = marker.getElement();
+            if (id === activeSociety.id) {
+              markerEl.style.backgroundColor = '#ffffff';
+              markerEl.style.width = '16px';
+              markerEl.style.height = '16px';
+              markerEl.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.8)';
+            } else {
+              markerEl.style.backgroundColor = '#3b82f6';
+              markerEl.style.width = '12px';
+              markerEl.style.height = '12px';
+              markerEl.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.6)';
+            }
+          } catch (err) {
+            console.error('Error updating marker styles:', err);
+          }
+        });
+      } catch (error) {
+        console.error('Error highlighting active society:', error);
+      }
     }
   }, [activeSociety, mapLoaded]);
 
