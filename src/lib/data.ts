@@ -1,4 +1,3 @@
-
 export interface Society {
   id: string;
   name: string;
@@ -23,7 +22,7 @@ export const societies: Society[] = [
     location: "Central Europe",
     established: "Mar 10, 2025",
     organizer: "Future Builders",
-    category: "Tech Hubs",
+    category: "Technology",
     coordinates: [10.0, 51.0],
     description: "A forward-thinking society focused on technological innovation and digital infrastructure in the heart of Europe."
   },
@@ -36,7 +35,7 @@ export const societies: Society[] = [
     location: "Northern Scandinavia",
     established: "Jun 5, 2024",
     organizer: "Sustainable Future Initiative",
-    category: "Eco-Communities",
+    category: "Sciences",
     coordinates: [15.5, 62.8],
     description: "A sustainable community built on renewable energy and circular economy principles in the Nordic region."
   },
@@ -49,7 +48,7 @@ export const societies: Society[] = [
     location: "Western Pacific",
     established: "Jan 22, 2025",
     organizer: "Pacific Development Group",
-    category: "Tech Hubs",
+    category: "Technology",
     coordinates: [135.0, 35.0],
     description: "A major technology and innovation center focused on AI, robotics, and next-generation computing."
   },
@@ -62,7 +61,7 @@ export const societies: Society[] = [
     location: "West Africa",
     established: "Apr 18, 2025",
     organizer: "African Future Collective",
-    category: "Global Cities",
+    category: "Politics",
     coordinates: [3.4, 6.5],
     description: "A rapidly growing urban center focused on financial technology and cultural innovation."
   },
@@ -75,7 +74,7 @@ export const societies: Society[] = [
     location: "South America",
     established: "Sep 30, 2024",
     organizer: "Sustainable Farming Initiative",
-    category: "Eco-Communities",
+    category: "Sciences",
     coordinates: [-70.0, -18.0],
     description: "An innovative agricultural community focusing on sustainable farming techniques and water conservation."
   },
@@ -88,7 +87,7 @@ export const societies: Society[] = [
     location: "Northern Canada",
     established: "Dec 12, 2024",
     organizer: "Global Climate Research",
-    category: "Emerging Societies",
+    category: "Sciences",
     coordinates: [-105.0, 75.0],
     description: "A specialized research community focused on climate science and Arctic ecosystem studies."
   },
@@ -101,7 +100,7 @@ export const societies: Society[] = [
     location: "Southern Europe",
     established: "May 15, 2025",
     organizer: "EuroMed Collective",
-    category: "Tech Hubs",
+    category: "Technology",
     coordinates: [12.5, 41.9],
     description: "A cross-border initiative creating new economic and social structures across the Mediterranean region."
   },
@@ -114,7 +113,7 @@ export const societies: Society[] = [
     location: "Oceania",
     established: "Feb 8, 2025",
     organizer: "Pacific Unity Council",
-    category: "Global Cities",
+    category: "Politics",
     coordinates: [151.2, -33.8],
     description: "A network of connected island communities pioneering new approaches to climate resilience."
   },
@@ -127,7 +126,7 @@ export const societies: Society[] = [
     location: "Central Asia",
     established: "Jul 21, 2024",
     organizer: "Mountain Resilience Initiative",
-    category: "Eco-Communities",
+    category: "Arts",
     coordinates: [85.3, 27.7],
     description: "A high-altitude community developing innovations in sustainable mountain living and conservation."
   },
@@ -140,7 +139,7 @@ export const societies: Society[] = [
     location: "Middle East",
     established: "Nov 3, 2024",
     organizer: "Arid Regions Development",
-    category: "Emerging Societies",
+    category: "Arts",
     coordinates: [55.3, 25.2],
     description: "A cutting-edge society focused on water conservation, solar energy, and desert agriculture technology."
   }
@@ -148,10 +147,10 @@ export const societies: Society[] = [
 
 export const categories = [
   "All Societies",
-  "Emerging Societies",
-  "Tech Hubs",
-  "Eco-Communities",
-  "Global Cities"
+  "Arts",
+  "Sciences",
+  "Technology",
+  "Politics"
 ];
 
 export const regions = [
