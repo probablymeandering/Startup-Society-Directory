@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import InteractiveVisualization from '@/components/stats/InteractiveVisualization';
 import SimilarSocieties from '@/components/stats/SimilarSocieties';
-import SocietyComparisonTool from '@/components/stats/SocietyComparisonTool';
 
 const Stats = () => {
   return (
@@ -37,11 +36,6 @@ const Stats = () => {
                 <SimilarSocieties type="location" />
               </TabsContent>
             </Tabs>
-          </section>
-          
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Society Comparison Tool</h2>
-            <SocietyComparisonTool />
           </section>
         </div>
       </main>
