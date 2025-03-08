@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -46,15 +47,16 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         return;
       }
 
-      // Initialize the map with centered globe
+      // Initialize the map with centered globe view
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
         projection: 'globe',
         zoom: 1.5,
-        center: [0, 0], // Center at [0,0] for a centered globe
-        pitch: 40,
+        center: [0, 20], // Adjust center point for better visual centering
+        pitch: 30,
         attributionControl: false,
+        bearing: 0
       });
 
       // Add navigation controls
@@ -65,8 +67,10 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         'top-right'
       );
 
-      // Explicitly set the container dimensions through CSS
+      // Make sure the container has explicit dimensions
       if (mapContainer.current) {
+        mapContainer.current.style.position = 'absolute';
+        mapContainer.current.style.inset = '0';
         mapContainer.current.style.width = '100%';
         mapContainer.current.style.height = '100%';
       }
@@ -75,6 +79,7 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
       setTimeout(() => {
         if (map.current) {
           map.current.resize();
+          console.log('Forced map resize');
         }
       }, 200);
 
@@ -278,9 +283,12 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
   }, [activeSociety, mapLoaded]);
 
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden">
-      <div ref={mapContainer} className="absolute inset-0 w-full h-full bg-gray-900" />
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/20 rounded-xl" />
+    <div className="relative w-full h-full overflow-hidden">
+      <div 
+        ref={mapContainer} 
+        className="absolute inset-0 w-full h-full bg-gray-900" 
+      />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/20" />
     </div>
   );
 };

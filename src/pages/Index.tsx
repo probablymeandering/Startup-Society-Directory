@@ -131,7 +131,7 @@ const Index = () => {
           onCategoryChange={handleCategoryChange} 
         />
         
-        {/* Mapbox Globe visualization with improved container */}
+        {/* Mapbox Globe visualization - adjusted for better centering */}
         <div className="w-full px-6 pt-6">
           <div className="h-[400px] w-full rounded-xl overflow-hidden bg-gray-900 relative">
             <MapboxGlobe 
