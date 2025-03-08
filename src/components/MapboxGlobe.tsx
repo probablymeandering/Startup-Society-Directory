@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -47,17 +46,15 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         return;
       }
 
-      // Initialize the map - adjust center position for better visibility
+      // Initialize the map with centered globe
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
         projection: 'globe',
         zoom: 1.5,
-        center: [0, 0], // Center at [0,0] for better globe positioning
+        center: [0, 0], // Center at [0,0] for a centered globe
         pitch: 40,
         attributionControl: false,
-        width: '100%',
-        height: '100%',
       });
 
       // Add navigation controls
@@ -68,18 +65,18 @@ const MapboxGlobe: React.FC<MapboxGlobeProps> = ({
         'top-right'
       );
 
-      // Ensure the map container is properly sized
+      // Explicitly set the container dimensions through CSS
       if (mapContainer.current) {
         mapContainer.current.style.width = '100%';
         mapContainer.current.style.height = '100%';
       }
 
-      // Force map resize after initialization to ensure it fills the container
+      // Force resize the map after a short delay to ensure proper rendering
       setTimeout(() => {
         if (map.current) {
           map.current.resize();
         }
-      }, 100);
+      }, 200);
 
       // Disable scroll zoom for smoother experience
       map.current.scrollZoom.disable();

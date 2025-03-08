@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import SearchFilters from '@/components/SearchFilters';
@@ -130,9 +131,9 @@ const Index = () => {
           onCategoryChange={handleCategoryChange} 
         />
         
-        {/* Mapbox Globe visualization with fixed height */}
+        {/* Mapbox Globe visualization with improved container */}
         <div className="w-full px-6 pt-6">
-          <div className="h-[400px] w-full rounded-xl overflow-hidden bg-gray-900 flex items-center justify-center">
+          <div className="h-[400px] w-full rounded-xl overflow-hidden bg-gray-900 relative">
             <MapboxGlobe 
               societies={societies} 
               activeSociety={activeSociety} 
