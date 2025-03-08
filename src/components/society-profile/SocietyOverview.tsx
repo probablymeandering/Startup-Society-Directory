@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Society } from '@/lib/data';
 import { Users, DollarSign, MapPin } from 'lucide-react';
@@ -57,8 +56,8 @@ const SocietyOverview = ({ society }: SocietyOverviewProps) => {
             <CardDescription>Total community size</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{society.population}</div>
-            <p className="text-muted-foreground text-sm mt-1">
+            <div className="text-3xl font-bold truncate">{society.population}</div>
+            <p className="text-muted-foreground text-sm mt-1 truncate">
               Distributed across {Math.round(footprintValue/10)} settlements
             </p>
           </CardContent>
@@ -74,10 +73,8 @@ const SocietyOverview = ({ society }: SocietyOverviewProps) => {
             <CardDescription>Average annual income</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center text-3xl font-bold">
-              {society.income}
-            </div>
-            <p className="text-muted-foreground text-sm mt-1">
+            <div className="text-3xl font-bold truncate">{society.income}</div>
+            <p className="text-muted-foreground text-sm mt-1 truncate">
               {incomeValue > 50 ? 'Above' : 'Below'} global average
             </p>
           </CardContent>
@@ -93,10 +90,8 @@ const SocietyOverview = ({ society }: SocietyOverviewProps) => {
             <CardDescription>Physical area covered</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center text-3xl font-bold">
-              {society.footprint}
-            </div>
-            <p className="text-muted-foreground text-sm mt-1">
+            <div className="text-3xl font-bold truncate">{society.footprint}</div>
+            <p className="text-muted-foreground text-sm mt-1 truncate">
               Population density: {Math.round(populationValue/footprintValue * 100) / 100} per sq km
             </p>
           </CardContent>
