@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import SearchFilters from '@/components/SearchFilters';
@@ -129,51 +128,50 @@ const Index = () => {
           onCategoryChange={handleCategoryChange} 
         />
         
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
-          <div className="flex flex-col gap-4 h-full">
-            <h2 className="text-lg font-semibold">
-              {filteredSocieties.length} Societies Found
-            </h2>
-            
-            <div className="flex-1 overflow-y-auto pr-2">
-              <div className="grid grid-cols-1 gap-3 pb-4">
-                {filteredSocieties.length > 0 ? (
-                  filteredSocieties.map((society) => (
-                    <SocietyCard 
-                      key={society.id} 
-                      society={society} 
-                      onClick={() => handleCardClick(society)} 
-                    />
-                  ))
-                ) : (
-                  <div className="flex flex-col items-center justify-center bg-muted/30 rounded-xl py-10 mt-4">
-                    <p className="text-muted-foreground">No societies match your criteria</p>
-                    <button 
-                      className="mt-2 text-primary text-sm"
-                      onClick={() => {
-                        setSearchTerm('');
-                        setActiveCategory(categories[0]);
-                        setActiveFilters({
-                          region: 'All Regions',
-                          population: 'Any Population',
-                          income: 'Any Income'
-                        });
-                      }}
-                    >
-                      Reset filters
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <div className="h-[500px] lg:h-full">
+        {/* Globe visualization now appears below categories but above society cards */}
+        <div className="w-full px-6 pt-6">
+          <div className="h-[400px] w-full rounded-xl overflow-hidden">
             <GlobeVisualization 
               societies={societies} 
               activeSociety={activeSociety} 
               onMarkerClick={handleMarkerClick} 
             />
+          </div>
+        </div>
+        
+        <div className="flex-1 p-6">
+          <h2 className="text-lg font-semibold mb-4">
+            {filteredSocieties.length} Societies Found
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredSocieties.length > 0 ? (
+              filteredSocieties.map((society) => (
+                <SocietyCard 
+                  key={society.id} 
+                  society={society} 
+                  onClick={() => handleCardClick(society)} 
+                />
+              ))
+            ) : (
+              <div className="col-span-full flex flex-col items-center justify-center bg-muted/30 rounded-xl py-10">
+                <p className="text-muted-foreground">No societies match your criteria</p>
+                <button 
+                  className="mt-2 text-primary text-sm"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setActiveCategory(categories[0]);
+                    setActiveFilters({
+                      region: 'All Regions',
+                      population: 'Any Population',
+                      income: 'Any Income'
+                    });
+                  }}
+                >
+                  Reset filters
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>
