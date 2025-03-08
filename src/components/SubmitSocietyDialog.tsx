@@ -34,7 +34,7 @@ const SubmitSocietyDialog = ({ onSubmit }: SubmitSocietyDialogProps) => {
           <span>Submit Society</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] p-0 overflow-hidden border-none bg-transparent shadow-none">
+      <DialogContent className="max-w-4xl p-0 overflow-hidden">
         <SubmitSocietyForm onSubmit={handleSubmit} onCancel={handleCancel} />
       </DialogContent>
     </Dialog>
