@@ -1,12 +1,184 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState, useEffect } from 'react';
+import Header from '@/components/Header';
+import SearchFilters from '@/components/SearchFilters';
+import CategoryTabs from '@/components/CategoryTabs';
+import SocietyCard from '@/components/SocietyCard';
+import GlobeVisualization from '@/components/GlobeVisualization';
+import Footer from '@/components/Footer';
+import { societies, categories } from '@/lib/data';
+import { Society } from '@/lib/data';
 
 const Index = () => {
+  const [filteredSocieties, setFilteredSocieties] = useState<Society[]>(societies);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const [activeFilters, setActiveFilters] = useState({
+    region: 'All Regions',
+    population: 'Any Population',
+    income: 'Any Income'
+  });
+  const [activeSociety, setActiveSociety] = useState<Society | null>(null);
+
+  // Apply filters and search
+  useEffect(() => {
+    let result = [...societies];
+    
+    // Apply search
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter(
+        society => 
+          society.name.toLowerCase().includes(searchLower) || 
+          society.location.toLowerCase().includes(searchLower) ||
+          society.organizer.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    // Apply category filter
+    if (activeCategory !== 'All Societies') {
+      result = result.filter(society => society.category === activeCategory);
+    }
+    
+    // Apply region filter
+    if (activeFilters.region !== 'All Regions') {
+      result = result.filter(society => 
+        society.location.includes(activeFilters.region)
+      );
+    }
+    
+    // Apply population filter
+    if (activeFilters.population !== 'Any Population') {
+      // Very simple filtering logic for demonstration
+      const popNumberOnly = society => 
+        parseFloat(society.population.replace(/[^0-9.]/g, ''));
+      
+      if (activeFilters.population === 'Under 500K') {
+        result = result.filter(society => popNumberOnly(society) < 0.5);
+      } else if (activeFilters.population === '500K - 1M') {
+        result = result.filter(society => 
+          popNumberOnly(society) >= 0.5 && popNumberOnly(society) <= 1
+        );
+      } else if (activeFilters.population === '1M - 5M') {
+        result = result.filter(society => 
+          popNumberOnly(society) > 1 && popNumberOnly(society) <= 5
+        );
+      } else if (activeFilters.population === 'Over 5M') {
+        result = result.filter(society => popNumberOnly(society) > 5);
+      }
+    }
+    
+    // Apply income filter - similar simplified logic
+    if (activeFilters.income !== 'Any Income') {
+      const incomeNumberOnly = society => 
+        parseFloat(society.income.replace(/[^0-9.]/g, ''));
+      
+      if (activeFilters.income === 'Under $30K') {
+        result = result.filter(society => incomeNumberOnly(society) < 30);
+      } else if (activeFilters.income === '$30K - $50K') {
+        result = result.filter(society => 
+          incomeNumberOnly(society) >= 30 && incomeNumberOnly(society) <= 50
+        );
+      } else if (activeFilters.income === '$50K - $70K') {
+        result = result.filter(society => 
+          incomeNumberOnly(society) > 50 && incomeNumberOnly(society) <= 70
+        );
+      } else if (activeFilters.income === 'Over $70K') {
+        result = result.filter(society => incomeNumberOnly(society) > 70);
+      }
+    }
+    
+    setFilteredSocieties(result);
+  }, [searchTerm, activeCategory, activeFilters]);
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+  };
+
+  const handleFilterChange = (filterType: string, value: string) => {
+    setActiveFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+  };
+
+  const handleCardClick = (society: Society) => {
+    setActiveSociety(society);
+  };
+
+  const handleMarkerClick = (society: Society) => {
+    setActiveSociety(society);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      
+      <main className="flex-1 flex flex-col pt-[72px]">
+        <SearchFilters 
+          onSearch={handleSearch} 
+          onFilterChange={handleFilterChange} 
+        />
+        
+        <CategoryTabs 
+          activeCategory={activeCategory} 
+          onCategoryChange={handleCategoryChange} 
+        />
+        
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+          <div className="flex flex-col gap-4 h-full">
+            <h2 className="text-lg font-semibold">
+              {filteredSocieties.length} Societies Found
+            </h2>
+            
+            <div className="flex-1 overflow-y-auto pr-2">
+              <div className="grid grid-cols-1 gap-3 pb-4">
+                {filteredSocieties.length > 0 ? (
+                  filteredSocieties.map((society) => (
+                    <SocietyCard 
+                      key={society.id} 
+                      society={society} 
+                      onClick={() => handleCardClick(society)} 
+                    />
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center bg-muted/30 rounded-xl py-10 mt-4">
+                    <p className="text-muted-foreground">No societies match your criteria</p>
+                    <button 
+                      className="mt-2 text-primary text-sm"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setActiveCategory(categories[0]);
+                        setActiveFilters({
+                          region: 'All Regions',
+                          population: 'Any Population',
+                          income: 'Any Income'
+                        });
+                      }}
+                    >
+                      Reset filters
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="h-[500px] lg:h-full">
+            <GlobeVisualization 
+              societies={societies} 
+              activeSociety={activeSociety} 
+              onMarkerClick={handleMarkerClick} 
+            />
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 };
