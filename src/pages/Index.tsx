@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import SearchFilters from '@/components/SearchFilters';
 import CategoryTabs from '@/components/CategoryTabs';
 import SocietyCard from '@/components/SocietyCard';
-import MapboxGlobe from '@/components/MapboxGlobe'; // Updated import
+import GlobeVisualization from '@/components/GlobeVisualization';
 import Footer from '@/components/Footer';
 import { societies, categories } from '@/lib/data';
 import { Society } from '@/lib/data';
@@ -129,10 +128,10 @@ const Index = () => {
           onCategoryChange={handleCategoryChange} 
         />
         
-        {/* Replaced GlobeVisualization with MapboxGlobe */}
+        {/* Globe visualization now appears below categories but above society cards */}
         <div className="w-full px-6 pt-6">
           <div className="h-[400px] w-full rounded-xl overflow-hidden">
-            <MapboxGlobe 
+            <GlobeVisualization 
               societies={societies} 
               activeSociety={activeSociety} 
               onMarkerClick={handleMarkerClick} 
