@@ -74,7 +74,9 @@ const SocietyOverview = ({ society }: SocietyOverviewProps) => {
             <CardDescription>Average annual income</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{society.income}</div>
+            <div className="flex items-center text-3xl font-bold">
+              {society.income}
+            </div>
             <p className="text-muted-foreground text-sm mt-1">
               {incomeValue > 50 ? 'Above' : 'Below'} global average
             </p>
@@ -91,7 +93,9 @@ const SocietyOverview = ({ society }: SocietyOverviewProps) => {
             <CardDescription>Physical area covered</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{society.footprint}</div>
+            <div className="flex items-center text-3xl font-bold">
+              {society.footprint}
+            </div>
             <p className="text-muted-foreground text-sm mt-1">
               Population density: {Math.round(populationValue/footprintValue * 100) / 100} per sq km
             </p>
