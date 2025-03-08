@@ -5,7 +5,18 @@ import { Society } from '@/lib/data';
 // Form schema for validation
 export const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  population: z.string().min(1, { message: 'Population is required' }),
+  population: z.string().min(1, { message: 'Population is required' })
+    .refine(value => {
+      // Extract numeric part and validate between 2,000 and 100,000
+      const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
+      const unit = value.replace(/[0-9.]/g, '').trim();
+      
+      if (unit.toLowerCase() === 'k') {
+        return numericValue >= 2 && numericValue <= 100;
+      } else {
+        return numericValue >= 2000 && numericValue <= 100000;
+      }
+    }, { message: 'Population must be between 2,000 and 100,000' }),
   income: z.string().min(1, { message: 'Income is required' }),
   footprint: z.string().min(1, { message: 'Footprint is required' }),
   location: z.string().min(2, { message: 'Location is required' }),

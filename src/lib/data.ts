@@ -17,7 +17,7 @@ export const societies: Society[] = [
   {
     id: "1",
     name: "New Tech Society - Europe",
-    population: "1.2M",
+    population: "45K",
     income: "$65K avg",
     footprint: "480 sq km",
     location: "Central Europe",
@@ -30,7 +30,7 @@ export const societies: Society[] = [
   {
     id: "2",
     name: "Eco-Village Collective",
-    population: "250K",
+    population: "25K",
     income: "$42K avg",
     footprint: "315 sq km",
     location: "Northern Scandinavia",
@@ -43,7 +43,7 @@ export const societies: Society[] = [
   {
     id: "3",
     name: "Pacific Innovation Hub",
-    population: "3.5M",
+    population: "78K",
     income: "$78K avg",
     footprint: "620 sq km",
     location: "Western Pacific",
@@ -56,7 +56,7 @@ export const societies: Society[] = [
   {
     id: "4",
     name: "New Lagos Community",
-    population: "4.8M",
+    population: "95K",
     income: "$35K avg",
     footprint: "890 sq km",
     location: "West Africa",
@@ -69,7 +69,7 @@ export const societies: Society[] = [
   {
     id: "5",
     name: "Andes Agricultural Network",
-    population: "780K",
+    population: "38K",
     income: "$38K avg",
     footprint: "1,200 sq km",
     location: "South America",
@@ -82,7 +82,7 @@ export const societies: Society[] = [
   {
     id: "6",
     name: "Arctic Research Community",
-    population: "45K",
+    population: "4.5K",
     income: "$92K avg",
     footprint: "120 sq km",
     location: "Northern Canada",
@@ -95,7 +95,7 @@ export const societies: Society[] = [
   {
     id: "7",
     name: "Mediterranean Innovation Corridor",
-    population: "2.3M",
+    population: "68K",
     income: "$58K avg",
     footprint: "340 sq km",
     location: "Southern Europe",
@@ -108,7 +108,7 @@ export const societies: Society[] = [
   {
     id: "8",
     name: "Oceania Connect",
-    population: "1.7M",
+    population: "52K",
     income: "$61K avg",
     footprint: "520 sq km",
     location: "Oceania",
@@ -121,7 +121,7 @@ export const societies: Society[] = [
   {
     id: "9",
     name: "Himalayan Sustainable Collective",
-    population: "320K",
+    population: "12K",
     income: "$28K avg",
     footprint: "280 sq km",
     location: "Central Asia",
@@ -134,7 +134,7 @@ export const societies: Society[] = [
   {
     id: "10",
     name: "Desert Innovation Zone",
-    population: "620K",
+    population: "32K",
     income: "$72K avg",
     footprint: "410 sq km",
     location: "Middle East",
