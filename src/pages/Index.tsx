@@ -8,8 +8,11 @@ import MapboxGlobe from '@/components/MapboxGlobe';
 import Footer from '@/components/Footer';
 import { societies, categories } from '@/lib/data';
 import { Society } from '@/lib/data';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
+  const { toast } = useToast();
+  const [allSocieties, setAllSocieties] = useState<Society[]>(societies);
   const [filteredSocieties, setFilteredSocieties] = useState<Society[]>(societies);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState(categories[0]);
@@ -22,7 +25,7 @@ const Index = () => {
 
   // Apply filters and search
   useEffect(() => {
-    let result = [...societies];
+    let result = [...allSocieties];
     
     // Apply search
     if (searchTerm) {
@@ -89,7 +92,7 @@ const Index = () => {
     }
     
     setFilteredSocieties(result);
-  }, [searchTerm, activeCategory, activeFilters]);
+  }, [searchTerm, activeCategory, activeFilters, allSocieties]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -116,9 +119,17 @@ const Index = () => {
     setActiveSociety(society);
   };
 
+  const handleSubmitSociety = (society: Society) => {
+    setAllSocieties(prev => [society, ...prev]);
+    toast({
+      title: "New Society Added",
+      description: `${society.name} has been added to the map.`,
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header onSubmitSociety={handleSubmitSociety} />
       
       <main className="flex-1 flex flex-col pt-[72px]">
         <SearchFilters 
@@ -135,7 +146,7 @@ const Index = () => {
         <div className="w-full px-6 pt-6">
           <div className="h-[450px] w-full rounded-xl overflow-hidden bg-gray-900 flex items-center justify-center">
             <MapboxGlobe 
-              societies={societies} 
+              societies={allSocieties} 
               activeSociety={activeSociety} 
               onMarkerClick={handleMarkerClick} 
             />

@@ -1,9 +1,14 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
+import SubmitSocietyDialog from './SubmitSocietyDialog';
+import { Society } from '@/lib/data';
 
-const Header = () => {
+interface HeaderProps {
+  onSubmitSociety?: (society: Society) => void;
+}
+
+const Header = ({ onSubmitSociety }: HeaderProps) => {
   return <header className="w-full glass fixed top-0 z-50 px-6 py-4 shadow-sm animate-in">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -22,10 +27,9 @@ const Header = () => {
           <Button variant="ghost" size="sm" className="hidden md:flex">
             Sign In
           </Button>
-          <Button className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 transition-colors rounded-lg py-2 px-4 text-sm font-medium">
-            <PlusIcon className="h-4 w-4" />
-            <span>Submit Society</span>
-          </Button>
+          {onSubmitSociety && (
+            <SubmitSocietyDialog onSubmit={onSubmitSociety} />
+          )}
         </div>
       </div>
     </header>;
