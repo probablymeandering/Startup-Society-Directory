@@ -3,30 +3,24 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import SubmitSocietyDialog from './SubmitSocietyDialog';
 import { Society } from '@/lib/data';
-import { Link, useLocation } from 'react-router-dom';
 
 interface HeaderProps {
   onSubmitSociety?: (society: Society) => void;
 }
 
 const Header = ({ onSubmitSociety }: HeaderProps) => {
-  const location = useLocation();
-  
-  return (
-    <header className="w-full glass fixed top-0 z-50 px-6 py-4 shadow-sm animate-in">
+  return <header className="w-full glass fixed top-0 z-50 px-6 py-4 shadow-sm animate-in">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link to="/">
-            <h1 className="text-xl font-bold tracking-tight">
-              <span className="text-primary">Startup</span> Societies
-            </h1>
-          </Link>
+          <h1 className="text-xl font-bold tracking-tight">
+            <span className="text-primary">Startup</span> Societies
+          </h1>
         </div>
         
         <nav className="hidden md:flex items-center space-x-1">
-          <Link to="/" className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}>Topics</Link>
-          <Link to="/" className="nav-item">Map</Link>
-          <Link to="/stats" className={`nav-item ${location.pathname === '/stats' ? 'active' : ''}`}>Stats</Link>
+          <a href="#" className="nav-item active">Topics</a>
+          <a href="#" className="nav-item">Map</a>
+          <a href="#" className="nav-item">Stats</a>
         </nav>
         
         <div className="flex items-center gap-4">
@@ -38,8 +32,7 @@ const Header = ({ onSubmitSociety }: HeaderProps) => {
           )}
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
 
 export default Header;
