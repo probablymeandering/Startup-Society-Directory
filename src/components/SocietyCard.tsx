@@ -2,6 +2,7 @@
 import React from 'react';
 import { Society } from '@/lib/data';
 import { Users, DollarSign, MapPin, Calendar, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface SocietyCardProps {
   society: Society;
@@ -9,10 +10,17 @@ interface SocietyCardProps {
 }
 
 const SocietyCard = ({ society, onClick }: SocietyCardProps) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    onClick(); // Keep the original onClick behavior
+    navigate(`/society/${society.id}`); // Navigate to society profile
+  };
+  
   return (
     <div 
       className="glass-card p-4 rounded-xl transition-all hover:shadow-md hover:translate-y-[-2px] cursor-pointer animate-in"
-      onClick={onClick}
+      onClick={handleClick}
       style={{ animationDelay: `${parseInt(society.id) * 50}ms` }}
     >
       <div className="flex flex-col gap-3">
