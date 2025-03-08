@@ -21,8 +21,7 @@ const Header = ({ onSubmitSociety }: HeaderProps) => {
         </div>
         
         <nav className="hidden md:flex items-center space-x-1">
-          <Link to="/" className="nav-item active">Topics</Link>
-          <Link to="#" className="nav-item">Map</Link>
+          <Link to="/" className="nav-item active">Explore</Link>
           <Link to="/stats" className="nav-item">Stats</Link>
         </nav>
         
