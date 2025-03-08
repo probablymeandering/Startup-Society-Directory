@@ -26,7 +26,7 @@ const DescriptionField = ({ form }: DescriptionFieldProps) => {
           <FormControl>
             <Textarea 
               placeholder="A brief description of the society..."
-              className="min-h-[100px]"
+              className="min-h-[120px] resize-none"
               {...field} 
             />
           </FormControl>

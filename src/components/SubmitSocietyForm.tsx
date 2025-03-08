@@ -64,27 +64,47 @@ const SubmitSocietyForm = ({ onSubmit, onCancel }: SubmitSocietyFormProps) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-card rounded-xl shadow-sm">
-      <div className="flex justify-between items-center mb-6">
+    <div className="w-full bg-background rounded-xl shadow-md overflow-hidden">
+      <div className="flex justify-between items-center p-6 border-b">
         <h2 className="text-2xl font-bold">Submit a New Society</h2>
-        <Button variant="ghost" size="sm" onClick={onCancel}>
+        <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8">
           <X className="h-4 w-4" />
         </Button>
       </div>
       
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <BasicInfoFields form={form} />
-            <MetricsFields form={form} />
-            <LocationFields form={form} />
-          </div>
-          
-          <DescriptionField form={form} />
-          
-          <FormActions onCancel={onCancel} />
-        </form>
-      </Form>
+      <div className="p-6 max-h-[70vh] overflow-y-auto">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <h3 className="text-lg font-medium">Basic Information</h3>
+                <BasicInfoFields form={form} />
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="text-lg font-medium">Metrics</h3>
+                <MetricsFields form={form} />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <h3 className="text-lg font-medium">Location Details</h3>
+                <LocationFields form={form} />
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="text-lg font-medium">Description</h3>
+                <DescriptionField form={form} />
+              </div>
+            </div>
+            
+            <div className="pt-4 border-t">
+              <FormActions onCancel={onCancel} />
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };

@@ -8,13 +8,18 @@ interface FormActionsProps {
 
 const FormActions = ({ onCancel }: FormActionsProps) => {
   return (
-    <div className="flex justify-end space-x-2">
-      <Button type="button" variant="outline" onClick={onCancel} className="font-medium">
+    <div className="flex justify-end space-x-4">
+      <Button 
+        type="button" 
+        variant="outline" 
+        onClick={onCancel} 
+        className="px-6"
+      >
         Cancel
       </Button>
       <Button 
         type="submit" 
-        className="bg-black text-white hover:bg-black/90 rounded-full px-8 py-2 font-medium"
+        className="bg-black text-white hover:bg-black/90 px-6"
       >
         Submit Society
       </Button>
