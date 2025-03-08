@@ -31,12 +31,12 @@ const SocietyCard = ({ society, onClick }: SocietyCardProps) => {
           
           <div className="flex items-center gap-1.5">
             <DollarSign className="h-3.5 w-3.5 text-primary" />
-            <span className="text-sm text-primary font-medium">{society.income}</span>
+            <span className="text-sm text-primary font-medium">Income: {society.income}</span>
           </div>
           
           <div className="flex items-center gap-1.5">
             <MapPin className="h-3.5 w-3.5 text-primary" />
-            <span className="text-sm text-primary font-medium">{society.footprint}</span>
+            <span className="text-sm text-primary font-medium">Footprint: {society.footprint}</span>
           </div>
         </div>
         

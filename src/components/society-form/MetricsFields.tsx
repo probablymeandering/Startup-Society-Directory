@@ -41,10 +41,13 @@ const MetricsFields = ({ form }: MetricsFieldsProps) => {
         name="income"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Average Income</FormLabel>
+            <FormLabel>Income</FormLabel>
             <FormControl>
               <Input placeholder="e.g. $65K avg" {...field} />
             </FormControl>
+            <FormDescription>
+              Average income with currency
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -59,6 +62,9 @@ const MetricsFields = ({ form }: MetricsFieldsProps) => {
             <FormControl>
               <Input placeholder="e.g. 480 sq km" {...field} />
             </FormControl>
+            <FormDescription>
+              Area size with unit (sq km, sq mi)
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
